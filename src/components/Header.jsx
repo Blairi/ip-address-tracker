@@ -8,13 +8,14 @@ import { getIpAddressInfo } from "../services/getIpAddressInfo";
 
 export const Header = () => {
 
-  const { ipAddress, setIpAddress } = useContext( IpAddressContext );
+  const { setIpAddress } = useContext( IpAddressContext );
   
   useEffect(() => {
 
     (async () => {
       
       setIpAddress({
+        errorMessage: null,
         isLoading: true,
         error: false,
         ip: null,
@@ -36,6 +37,7 @@ export const Header = () => {
         const data = await getIpAddressInfo({ ip: ip });
 
         setIpAddress({
+          errorMessage: null,
           isLoading: false,
           error: false,
           ip: data.query,
@@ -52,7 +54,21 @@ export const Header = () => {
 
       } 
       catch (error) {
-        console.log({error});
+        setIpAddress({
+          errorMessage: 'Error, try disable the Ad Blocker or try another browser',
+          isLoading: false,
+          error: true,
+          ip: null,
+          isp: null,
+          location: {
+            lat: 0,
+            lng: 0,
+            city: null,
+            region: null,
+            postalCode: null,
+            timezone: null,
+          },
+        })
       }
 
     })();
@@ -73,12 +89,9 @@ export const Header = () => {
         </div>
 
         <div className='absolute top-[50%] w-[88%] max-w-[1280px] mt-10'>
-          <DetailsCard 
-            ip={ ipAddress?.ip }
-            isp={ ipAddress?.isp }
-            location={ ipAddress?.location }
-          />
+          <DetailsCard />
         </div>
+        
       </div>
 
 
